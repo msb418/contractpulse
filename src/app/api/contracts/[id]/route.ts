@@ -10,6 +10,30 @@ function normalizeItem(doc: any) {
   const updatedRaw = doc?.updatedAt ?? doc?.updated ?? doc?.updated_at ?? null;
   const valueRaw = doc?.value ?? doc?.amount ?? 0;
 
+  // Normalize tags from array or comma-separated string
+  const rawTags = doc?.tags;
+  const tags = Array.isArray(rawTags)
+    ? rawTags.filter((t) => typeof t === "string")
+    : typeof rawTags === "string"
+    ? rawTags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean)
+    : [];
+
+  // Coerce noticeDays from number or string; default 30 if missing
+  const noticeDaysRaw = doc?.noticeDays ?? doc?.notice_days;
+  const noticeDays =
+    noticeDaysRaw === undefined || noticeDaysRaw === null || noticeDaysRaw === ""
+      ? 30
+      : Number(noticeDaysRaw) || 30;
+
+  const toIso = (v: any) => {
+    if (!v) return null;
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? null : d.toISOString();
+  };
+
   return {
     _id: String(doc?._id ?? ""),
     title: String(doc?.title ?? ""),
@@ -17,13 +41,13 @@ function normalizeItem(doc: any) {
     value: Number(valueRaw || 0),
     currency: String(doc?.currency ?? "USD"),
     notes: String(doc?.notes ?? ""),
-    tags: Array.isArray(doc?.tags) ? doc.tags : [],
+    tags,
     autoRenew: Boolean(doc?.autoRenew ?? doc?.auto_renew ?? false),
-    noticeDays: Number(doc?.noticeDays ?? doc?.notice_days ?? 30),
+    noticeDays,
     startDate: doc?.startDate ?? null,
     endDate: doc?.endDate ?? null,
-    created: createdRaw ? new Date(createdRaw).toISOString() : null,
-    updated: updatedRaw instanceof Date ? updatedRaw.toISOString() : (updatedRaw ?? null),
+    created: toIso(createdRaw),
+    updated: toIso(updatedRaw),
   };
 }
 
@@ -105,6 +129,11 @@ export async function PUT(req: Request, { params }: { params: Promise<Params> })
 
     if (Array.isArray(incoming.tags)) {
       update.tags = incoming.tags.filter((t) => typeof t === "string");
+    } else if (typeof incoming.tags === "string") {
+      update.tags = incoming.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
     }
 
     update.updatedAt = new Date();

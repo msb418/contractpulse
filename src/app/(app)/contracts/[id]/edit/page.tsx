@@ -12,6 +12,8 @@ type Contract = {
   notes?: string;
   startDate?: string;
   endDate?: string;
+  tags?: string[] | string;
+  noticeDays?: number;
 };
 
 async function loadContract(id: string): Promise<Contract | null> {
@@ -156,6 +158,33 @@ export default function EditContractPage({
               className="rounded-lg bg-slate-900/50 px-3 py-2 text-slate-100 outline-none ring-1 ring-white/10 focus:ring-2"
               value={form.endDate ? form.endDate.slice(0, 10) : ""}
               onChange={(e) => setForm({ ...form, endDate: e.target.value })}
+            />
+          </label>
+
+          <label className="flex flex-col gap-2">
+            <span className="text-xs uppercase text-slate-400">Notice Days</span>
+            <input
+              type="number"
+              className="rounded-lg bg-slate-900/50 px-3 py-2 text-slate-100 outline-none ring-1 ring-white/10 focus:ring-2"
+              value={form.noticeDays ?? ""}
+              onChange={(e) =>
+                setForm({ ...form, noticeDays: Number(e.target.value) || 0 })
+              }
+            />
+          </label>
+
+          <label className="flex flex-col gap-2">
+            <span className="text-xs uppercase text-slate-400">Tags (comma-separated)</span>
+            <input
+              type="text"
+              className="rounded-lg bg-slate-900/50 px-3 py-2 text-slate-100 outline-none ring-1 ring-white/10 focus:ring-2"
+              value={Array.isArray(form.tags) ? form.tags.join(", ") : form.tags || ""}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  tags: e.target.value.split(",").map((t) => t.trim()).filter(Boolean),
+                })
+              }
             />
           </label>
 
