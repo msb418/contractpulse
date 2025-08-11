@@ -3,9 +3,13 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { hashPassword } from "@/lib/jwt";        // ⬅️ correct source
 import { createSessionToken, setAuthCookie } from "@/lib/auth";
+import hcaptcha from "hcaptcha";
 
 export async function POST(req: Request) {
-  const { email, password } = await req.json();
+  const { email, password, captchaToken } = await req.json();
+
+  const captchaRes: any = await hcaptcha.verify(process.env.HCAPTCHA_SECRET || "", captchaToken);
+  if (!captchaRes.success) return NextResponse.json({ error: "Captcha failed" }, { status: 400 });
 
   const users = await db("users");
   const existing = await users.findOne({ email: String(email).toLowerCase().trim() });
