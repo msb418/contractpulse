@@ -2,9 +2,24 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { comparePassword } from "@/lib/jwt";
 import { createSessionToken, setAuthCookie, clearAuthCookie } from "@/lib/auth";
+import { verify } from "hcaptcha";
 
 export async function POST(req: Request) {
-  const { email, password } = await req.json();
+  const { email, password, captchaToken } = await req.json();
+
+  // Verify HCaptcha
+  const captchaSecret = process.env.HCAPTCHA_SECRET;
+  if (!captchaSecret) {
+    return NextResponse.json({ error: "Captcha secret not configured" }, { status: 500 });
+  }
+  try {
+    const captchaRes = await verify(captchaSecret, captchaToken);
+    if (!captchaRes.success) {
+      return NextResponse.json({ error: "Captcha verification failed" }, { status: 400 });
+    }
+  } catch {
+    return NextResponse.json({ error: "Captcha verification error" }, { status: 500 });
+  }
 
   const users = await db("users");
   const user = await users.findOne({

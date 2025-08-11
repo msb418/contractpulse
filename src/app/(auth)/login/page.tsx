@@ -49,13 +49,6 @@ export default function LoginPage() {
   return (
     <div className="rounded border border-white/10 p-5">
       <h2 className="mb-4 text-lg font-medium">Log in</h2>
-      <HCaptcha
-        ref={captchaRef}
-        sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY!}
-        onVerify={(token) => setCaptchaToken(token)}
-        onExpire={() => setCaptchaToken(null)}
-        onError={() => setCaptchaToken(null)}
-      />
       {err && <p className="mb-3 rounded bg-red-900/40 p-2 text-sm text-red-200">{err}</p>}
 
       <form onSubmit={onSubmit} className="space-y-3">
@@ -82,6 +75,16 @@ export default function LoginPage() {
             autoComplete="current-password"
             placeholder="••••••••"
             required
+          />
+        </div>
+
+        <div className="mt-3">
+          <HCaptcha
+            ref={captchaRef}
+            sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY!}
+            onVerify={(token) => setCaptchaToken(token)}
+            onExpire={() => setCaptchaToken(null)}
+            onError={() => setCaptchaToken(null)}
           />
         </div>
 
