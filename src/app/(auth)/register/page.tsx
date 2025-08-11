@@ -35,13 +35,16 @@ export default function RegisterPage() {
         body: JSON.stringify({ email: trimmed, password, captchaToken }),
       });
       if (res.ok) {
-        router.push("/contracts");
+        // Redirect to login with success flag; some 2xx responses may have no JSON body
+        router.push("/login?registered=1");
+        return;
       } else {
+        // Try to surface server error message if present
         const data = await res.json().catch(() => ({}));
-        setErr(data.error || "Registration failed.");
+        setErr((data as any)?.error || "Registration failed.");
       }
     } catch {
-      setErr("Network error. Try again.");
+      setErr("Network error. Please try again.");
     } finally {
       setLoading(false);
     }
