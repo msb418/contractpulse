@@ -2,7 +2,7 @@
 set -e
 
 # Throttle window in seconds (3 minutes)
-MIN_INTERVAL=180
+MIN_INTERVAL=10
 STATE_FILE=".vscode/.last-auto-commit"
 
 cd "$(git rev-parse --show-toplevel)"

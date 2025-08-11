@@ -42,9 +42,8 @@ export async function POST(req: Request) {
 
   const token = await createSessionToken(String(user._id));
 
-  // Redirect back to /contracts on the same origin as the incoming request.
-  const res = NextResponse.redirect(new URL("/contracts", req.url));
-  clearAuthCookie(res);      // clear any old cookie
-  setAuthCookie(res, token); // set a fresh session cookie
+  // Set a fresh session cookie and return JSON response for frontend to handle redirect.
+  const res = NextResponse.json({ message: "Login successful", redirectTo: "/contracts" });
+  setAuthCookie(res, token);
   return res;
 }
