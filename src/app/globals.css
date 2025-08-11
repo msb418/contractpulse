@@ -63,3 +63,26 @@ input::placeholder,
 textarea::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
+
+/* -------------------------
+   Date Picker Icon Styles
+------------------------- */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* Makes dark icons light */
+  cursor: pointer;
+}
+
+/* Firefox-specific */
+input[type="date"]::-moz-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+/* Hover effect for better UX */
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  filter: invert(1) brightness(1.3);
+}
+
+input[type="date"]::-moz-calendar-picker-indicator:hover {
+  filter: invert(1) brightness(1.3);
+}
