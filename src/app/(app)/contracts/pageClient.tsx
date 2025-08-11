@@ -82,9 +82,9 @@ export default function ContractsClient() {
 
   return (
     <div>
-      <div className="mb-4 flex items-center gap-3">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <input
-          className="w-72 rounded-md bg-[#0f2336] text-gray-100 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-600"
+          className="w-full sm:w-72 rounded-md bg-[#0f2336] text-gray-100 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-600"
           type="text"
           placeholder="Search contracts..."
           value={q}
@@ -115,10 +115,11 @@ export default function ContractsClient() {
         </Link>
       </div>
 
-      <table
-        className="w-full border-collapse rounded-lg overflow-hidden"
-        style={{ borderSpacing: 0 }}
-      >
+      <div className="overflow-x-auto -mx-4 sm:mx-0">
+        <table
+          className="min-w-[720px] w-full text-sm border-collapse rounded-lg overflow-hidden"
+          style={{ borderSpacing: 0 }}
+        >
         <thead className="bg-white/5 text-gray-300">
           <tr>
             <th className="text-left px-4 py-3">Title</th>
@@ -139,17 +140,17 @@ export default function ContractsClient() {
             rows.map(({ _id, title, status, value, currency, created }) => (
               <tr key={_id} className="border-t border-white/10">
                 <td className="px-4 py-3">{title}</td>
-                <td className="px-4 py-3">{status}</td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 whitespace-nowrap">{status}</td>
+                <td className="px-4 py-3 whitespace-nowrap">
                   {new Intl.NumberFormat(undefined, {
                     style: "currency",
                     currency,
                   }).format(value)}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 whitespace-nowrap">
                   {created ? new Date(created).toLocaleDateString() : "N/A"}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 whitespace-nowrap">
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/contracts/${_id}`}
@@ -175,7 +176,8 @@ export default function ContractsClient() {
             ))
           )}
         </tbody>
-      </table>
+        </table>
+      </div>
 
       <div className="mt-4 flex items-center gap-3 text-gray-300">
         <button
