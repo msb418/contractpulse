@@ -78,17 +78,17 @@ export default function EditContractPage({
 
   if (!form) {
     return (
-      <div className="mx-auto max-w-5xl p-6 text-slate-300">Loading…</div>
+      <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 text-slate-300">Loading…</div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-5xl p-6">
+    <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6">
       <form
         onSubmit={onSubmit}
         className="rounded-2xl border border-white/10 bg-slate-900/60 p-6"
       >
-        <h1 className="mb-6 text-xl font-semibold text-slate-100">
+        <h1 className="mb-6 text-lg sm:text-xl font-semibold text-slate-100">
           Edit Contract
         </h1>
 
@@ -199,18 +199,18 @@ export default function EditContractPage({
           </label>
         </div>
 
-        <div className="mt-6 flex gap-3">
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
           <button
             type="button"
             onClick={() => router.back()}
-            className="rounded-lg bg-slate-800 px-4 py-2 text-slate-200 ring-1 ring-white/10 hover:bg-slate-700"
+            className="inline-flex h-10 w-full sm:w-auto items-center justify-center rounded-lg bg-slate-800 px-4 text-slate-200 ring-1 ring-white/10 hover:bg-slate-700"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-500 disabled:opacity-60"
+            className="inline-flex h-10 w-full sm:w-auto items-center justify-center rounded-lg bg-blue-600 px-4 font-medium text-white hover:bg-blue-500 disabled:opacity-60"
           >
             {saving ? "Saving…" : "Save changes"}
           </button>

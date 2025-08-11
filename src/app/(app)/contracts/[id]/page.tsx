@@ -117,32 +117,32 @@ export default async function ContractViewPage({ params }: PagePropsLike) {
   const noticeDays = contract.noticeDays;
 
   return (
-    <div className="mx-auto max-w-5xl p-6">
+    <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6">
       <div className="rounded-2xl border border-white/10 bg-black/30 p-6 text-white">
         <h2 className="mb-4 text-lg font-semibold">Details</h2>
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-xl font-semibold">{contract.title || "—"}</h1>
-          <div className="space-x-2 flex items-center">
+        <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="text-lg sm:text-xl font-semibold break-words">{contract.title || "—"}</h1>
+          <div className="flex flex-col sm:flex-row gap-2">
             <Link
               href={`/contracts/${contract._id}/edit`}
-              className="inline-flex h-10 items-center rounded-md bg-blue-600 px-3 text-sm font-medium hover:bg-blue-500"
+              className="inline-flex h-10 w-full sm:w-auto items-center justify-center rounded-md bg-blue-600 px-3 text-sm font-medium hover:bg-blue-500"
             >
               Edit
             </Link>
             <DeleteButton
               id={contract._id}
-              className="inline-flex h-10 items-center rounded-md bg-red-600 text-sm font-medium hover:bg-red-500 px-3"
+              className="inline-flex h-10 w-full sm:w-auto items-center justify-center rounded-md bg-red-600 text-sm font-medium hover:bg-red-500 px-3"
             />
             <Link
               href="/contracts"
-              className="inline-flex h-10 items-center rounded-md bg-white/10 px-3 text-sm font-medium hover:bg-white/20"
+              className="inline-flex h-10 w-full sm:w-auto items-center justify-center rounded-md bg-white/10 px-3 text-sm font-medium hover:bg-white/20"
             >
               Back
             </Link>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
           <div className="rounded-lg bg-[#0f172a] p-4">
             <div className="text-xs uppercase tracking-wider opacity-60">
               Status
