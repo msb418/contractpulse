@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -9,16 +10,22 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const captchaRef = useRef<HCaptcha>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!captchaToken) {
+      setErr("Please complete the captcha.");
+      return;
+    }
     setErr(null);
     setLoading(true);
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password }),
+        body: JSON.stringify({ email: email.trim(), password, captchaToken }),
       });
       if (res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -29,6 +36,8 @@ export default function LoginPage() {
       } else {
         const data = await res.json().catch(() => ({}));
         setErr(data.error || "Invalid email or password.");
+        captchaRef.current?.resetCaptcha();
+        setCaptchaToken(null);
       }
     } catch {
       setErr("Network error. Try again.");
@@ -40,6 +49,13 @@ export default function LoginPage() {
   return (
     <div className="rounded border border-white/10 p-5">
       <h2 className="mb-4 text-lg font-medium">Log in</h2>
+      <HCaptcha
+        ref={captchaRef}
+        sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY!}
+        onVerify={(token) => setCaptchaToken(token)}
+        onExpire={() => setCaptchaToken(null)}
+        onError={() => setCaptchaToken(null)}
+      />
       {err && <p className="mb-3 rounded bg-red-900/40 p-2 text-sm text-red-200">{err}</p>}
 
       <form onSubmit={onSubmit} className="space-y-3">
@@ -70,7 +86,7 @@ export default function LoginPage() {
         </div>
 
         <button
-          disabled={loading}
+          disabled={loading || !captchaToken}
           className="w-full rounded bg-blue-600/80 px-3 py-2"
         >
           {loading ? "Signing in…" : "Sign in"}
