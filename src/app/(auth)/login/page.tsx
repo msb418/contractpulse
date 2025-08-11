@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const registered = searchParams.get("registered");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState<string | null>(null);
@@ -49,6 +51,11 @@ export default function LoginPage() {
   return (
     <div className="rounded border border-white/10 p-5">
       <h2 className="mb-4 text-lg font-medium">Log in</h2>
+      {registered && (
+        <p className="mb-3 rounded bg-green-700/50 p-2 text-sm text-green-100">
+          Account created successfully — please sign in.
+        </p>
+      )}
       {err && <p className="mb-3 rounded bg-red-900/40 p-2 text-sm text-red-200">{err}</p>}
 
       <form onSubmit={onSubmit} className="space-y-3">
