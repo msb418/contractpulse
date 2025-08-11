@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 // src/app/api/auth/register/route.ts
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
@@ -24,7 +26,12 @@ export async function POST(req: Request) {
   });
 
   const token = await createSessionToken(String(insertedId));
-  const res = NextResponse.redirect(new URL("/contracts", "http://localhost:3000"));
+  const res = NextResponse.redirect(new URL("/contracts", process.env.NEXT_PUBLIC_APP_URL || req.headers.get("origin") || "http://localhost:3000"));
   setAuthCookie(res, token);                     // ⬅️ pass BOTH args
+
+  if (req.headers.get("accept")?.includes("application/json")) {
+    return NextResponse.json({ success: true, redirect: "/contracts" }, { status: 201 });
+  }
+
   return res;
 }
