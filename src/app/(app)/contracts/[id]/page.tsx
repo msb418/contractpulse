@@ -10,8 +10,11 @@ type Contract = {
   status: string;
   notes?: string;
   createdAt?: string | Date;
+  created?: string | Date;
   startDate?: string | Date;
   endDate?: string | Date;
+  tags?: string[];
+  noticeDays?: number;
 };
 
 async function loadContract(id: string): Promise<Contract | null> {
@@ -79,9 +82,10 @@ export default async function ContractViewPage(props: {
     );
   }
 
+  const createdRaw = contract.createdAt ?? (contract as any).created;
   const created =
-    contract.createdAt &&
-    new Date(contract.createdAt).toLocaleDateString(undefined, {
+    createdRaw &&
+    new Date(createdRaw).toLocaleDateString(undefined, {
       month: "numeric",
       day: "numeric",
       year: "numeric",
@@ -102,6 +106,12 @@ export default async function ContractViewPage(props: {
       day: "numeric",
       year: "numeric",
     });
+
+  const tags = Array.isArray(contract.tags)
+    ? contract.tags.filter(Boolean).join(", ")
+    : (typeof (contract as any).tags === "string" ? (contract as any).tags : "");
+
+  const noticeDays = (contract as any).noticeDays as number | undefined;
 
   return (
     <div className="mx-auto max-w-5xl p-6">
@@ -161,11 +171,19 @@ export default async function ContractViewPage(props: {
             <div className="mt-1 text-sm">{end || "—"}</div>
           </div>
 
+          <div className="rounded-lg bg-black/40 p-4">
+            <div className="text-xs uppercase tracking-wider opacity-60">Notice days</div>
+            <div className="mt-1 text-sm">{typeof noticeDays === "number" ? noticeDays : "—"}</div>
+          </div>
+
           <div className="rounded-lg bg-black/40 p-4 md:col-span-2">
-            <div className="text-xs uppercase tracking-wider opacity-60">
-              Created
-            </div>
+            <div className="text-xs uppercase tracking-wider opacity-60">Created</div>
             <div className="mt-1 text-sm">{created || "—"}</div>
+          </div>
+
+          <div className="rounded-lg bg-black/40 p-4 md:col-span-2">
+            <div className="text-xs uppercase tracking-wider opacity-60">Tags</div>
+            <div className="mt-1 text-sm">{tags || "—"}</div>
           </div>
 
           <div className="rounded-lg bg-black/40 p-4 md:col-span-2">
