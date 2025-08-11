@@ -51,12 +51,15 @@ async function loadContract(id: string): Promise<Contract | null> {
   }
 }
 
-interface ContractPageProps {
-  params: { id: string };
-}
+// Match Next.js PageProps shape so Vercel's type check passes
+type PagePropsLike = {
+  params?: Promise<any>;
+  searchParams?: Promise<any>;
+};
 
-export default async function ContractViewPage({ params }: ContractPageProps) {
-  const { id } = params;
+export default async function ContractViewPage({ params }: PagePropsLike) {
+  const resolvedParams = params ? await params : ({} as any);
+  const id = resolvedParams.id as string;
 
   const contract = await loadContract(id);
 
