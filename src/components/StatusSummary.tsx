@@ -37,7 +37,7 @@ export default function StatusSummary({ items }: { items: Item[] }) {
             style={{
               background:
                 s === "Active" ? "rgba(34,197,94,.6)" :
-                
+                s === "Pending" ? "rgba(234,179,8,.6)" :
                 s === "Draft" ? "rgba(59,130,246,.6)" :
                 s === "Expired" ? "rgba(113,113,122,.6)" :
                 "rgba(239,68,68,.6)"

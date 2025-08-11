@@ -104,7 +104,6 @@ export default function ContractsClient() {
           <option>All statuses</option>
           <option>Draft</option>
           <option>Active</option>
-          <option>Pending</option>
           <option>Expired</option>
           <option>Cancelled</option>
         </select>
