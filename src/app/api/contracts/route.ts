@@ -5,6 +5,8 @@ import { getCurrentUserId } from "@/lib/auth";
 function normalizeRow(doc: any) {
   const createdRaw = doc?.createdAt ?? doc?.created ?? doc?.created_at ?? null;
   const valueRaw = doc?.value ?? doc?.amount ?? 0;
+  const tagsRaw = Array.isArray(doc?.tags) ? doc.tags : typeof doc?.tags === "string" ? doc.tags.split(",").map((t: string) => t.trim()).filter(Boolean) : [];
+  const noticeDaysRaw = typeof doc?.noticeDays === "number" ? doc.noticeDays : Number(doc?.noticeDays ?? 30);
 
   return {
     _id: String(doc?._id ?? ""),
@@ -13,6 +15,8 @@ function normalizeRow(doc: any) {
     value: Number(valueRaw || 0),
     currency: String(doc?.currency ?? "USD"),
     created: createdRaw instanceof Date ? createdRaw.toISOString() : (createdRaw ?? null),
+    tags: tagsRaw,
+    noticeDays: noticeDaysRaw
   };
 }
 
@@ -63,7 +67,7 @@ export async function POST(req: Request) {
     value: Number(body.value ?? 0),
     currency: String(body.currency ?? "USD"),
     notes: String(body.notes ?? ""),
-    tags: Array.isArray(body.tags) ? body.tags : [],
+    tags: Array.isArray(body.tags) ? body.tags : typeof body.tags === "string" ? body.tags.split(",").map((t: string) => t.trim()).filter(Boolean) : [],
     autoRenew: Boolean(body.autoRenew ?? false),
     noticeDays: Number(body.noticeDays ?? 30),
     startDate: body.startDate ?? null,

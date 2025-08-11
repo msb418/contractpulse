@@ -140,14 +140,14 @@ export default async function ContractViewPage(props: {
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="rounded-lg bg-black/40 p-4">
+          <div className="rounded-lg bg-[#0f172a] p-4">
             <div className="text-xs uppercase tracking-wider opacity-60">
               Status
             </div>
             <div className="mt-1 text-sm">{contract.status ?? "—"}</div>
           </div>
 
-          <div className="rounded-lg bg-black/40 p-4">
+          <div className="rounded-lg bg-[#0f172a] p-4">
             <div className="text-xs uppercase tracking-wider opacity-60">
               Value
             </div>
@@ -161,32 +161,32 @@ export default async function ContractViewPage(props: {
             </div>
           </div>
 
-          <div className="rounded-lg bg-black/40 p-4">
+          <div className="rounded-lg bg-[#0f172a] p-4">
             <div className="text-xs uppercase tracking-wider opacity-60">Start date</div>
             <div className="mt-1 text-sm">{start || "—"}</div>
           </div>
 
-          <div className="rounded-lg bg-black/40 p-4">
+          <div className="rounded-lg bg-[#0f172a] p-4">
             <div className="text-xs uppercase tracking-wider opacity-60">End date</div>
             <div className="mt-1 text-sm">{end || "—"}</div>
           </div>
 
-          <div className="rounded-lg bg-black/40 p-4">
+          <div className="rounded-lg bg-[#0f172a] p-4">
             <div className="text-xs uppercase tracking-wider opacity-60">Notice days</div>
             <div className="mt-1 text-sm">{typeof noticeDays === "number" ? noticeDays : "—"}</div>
           </div>
 
-          <div className="rounded-lg bg-black/40 p-4 md:col-span-2">
+          <div className="rounded-lg bg-[#0f172a] p-4 md:col-span-2">
             <div className="text-xs uppercase tracking-wider opacity-60">Created</div>
             <div className="mt-1 text-sm">{created || "—"}</div>
           </div>
 
-          <div className="rounded-lg bg-black/40 p-4 md:col-span-2">
+          <div className="rounded-lg bg-[#0f172a] p-4 md:col-span-2">
             <div className="text-xs uppercase tracking-wider opacity-60">Tags</div>
             <div className="mt-1 text-sm">{tags || "—"}</div>
           </div>
 
-          <div className="rounded-lg bg-black/40 p-4 md:col-span-2">
+          <div className="rounded-lg bg-[#0f172a] p-4 md:col-span-2">
             <div className="text-xs uppercase tracking-wider opacity-60">
               Notes
             </div>
