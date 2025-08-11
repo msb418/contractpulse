@@ -22,7 +22,7 @@ function normalizeItem(doc: any) {
     noticeDays: Number(doc?.noticeDays ?? doc?.notice_days ?? 30),
     startDate: doc?.startDate ?? null,
     endDate: doc?.endDate ?? null,
-    created: createdRaw instanceof Date ? createdRaw.toISOString() : (createdRaw ?? null),
+    created: createdRaw ? new Date(createdRaw).toISOString() : null,
     updated: updatedRaw instanceof Date ? updatedRaw.toISOString() : (updatedRaw ?? null),
   };
 }
