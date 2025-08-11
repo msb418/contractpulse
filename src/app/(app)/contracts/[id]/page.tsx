@@ -13,7 +13,7 @@ type Contract = {
   created?: string | Date;
   startDate?: string | Date;
   endDate?: string | Date;
-  tags?: string[];
+  tags?: string[] | string;
   noticeDays?: number;
 };
 
@@ -27,7 +27,7 @@ async function loadContract(id: string): Promise<Contract | null> {
     const proto = h.get("x-forwarded-proto") ?? "http";
     cookie = h.get("cookie") ?? "";
     if (host) baseUrl = `${proto}://${host}`;
-  } catch (_) {
+  } catch {
     // headers() can throw in some edge contexts; fall through to env
   }
   if (!baseUrl) {
@@ -51,14 +51,12 @@ async function loadContract(id: string): Promise<Contract | null> {
   }
 }
 
-export default async function ContractViewPage(props: {
-  params: { id: string } | Promise<{ id: string }>;
-}) {
-  // Next 15 may provide params as a Promise in some cases
-  const { id } =
-    typeof (props.params as any).then === "function"
-      ? await (props.params as Promise<{ id: string }>)
-      : (props.params as { id: string });
+interface ContractPageProps {
+  params: { id: string };
+}
+
+export default async function ContractViewPage({ params }: ContractPageProps) {
+  const { id } = params;
 
   const contract = await loadContract(id);
 
@@ -82,7 +80,7 @@ export default async function ContractViewPage(props: {
     );
   }
 
-  const createdRaw = contract.createdAt ?? (contract as any).created;
+  const createdRaw = contract.createdAt ?? contract.created;
   const created =
     createdRaw &&
     new Date(createdRaw).toLocaleDateString(undefined, {
@@ -109,9 +107,11 @@ export default async function ContractViewPage(props: {
 
   const tags = Array.isArray(contract.tags)
     ? contract.tags.filter(Boolean).join(", ")
-    : (typeof (contract as any).tags === "string" ? (contract as any).tags : "");
+    : typeof contract.tags === "string"
+    ? contract.tags
+    : "";
 
-  const noticeDays = (contract as any).noticeDays as number | undefined;
+  const noticeDays = contract.noticeDays;
 
   return (
     <div className="mx-auto max-w-5xl p-6">
