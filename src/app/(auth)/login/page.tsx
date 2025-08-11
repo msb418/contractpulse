@@ -21,6 +21,10 @@ export default function LoginPage() {
         body: JSON.stringify({ email: email.trim(), password }),
       });
       if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        if (data.token) {
+          document.cookie = `token=${data.token}; Secure; SameSite=Strict; path=/`;
+        }
         router.push("/contracts");
       } else {
         const data = await res.json().catch(() => ({}));

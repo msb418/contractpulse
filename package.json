@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hcaptcha/react-hcaptcha": "^1.12.1",
     "bcryptjs": "^3.0.2",
     "jose": "^6.0.12",
     "mongodb": "^6.18.0",

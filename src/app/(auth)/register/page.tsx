@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -9,6 +10,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -20,12 +22,17 @@ export default function RegisterPage() {
       return;
     }
 
+    if (!captchaToken) {
+      setErr("Please complete the CAPTCHA.");
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email: trimmed, password }),
+        body: JSON.stringify({ email: trimmed, password, captchaToken }),
       });
       if (res.ok) {
         router.push("/contracts");
@@ -72,6 +79,13 @@ export default function RegisterPage() {
             minLength={8}
           />
         </div>
+
+        <HCaptcha
+          sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""}
+          onVerify={(token: string) => setCaptchaToken(token)}
+          onExpire={() => setCaptchaToken(null)}
+          onError={() => setCaptchaToken(null)}
+        />
 
         <button
           disabled={loading}
