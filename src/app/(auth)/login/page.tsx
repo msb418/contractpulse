@@ -71,7 +71,7 @@ function LoginInner() {
 
   return (
     <div className="rounded border border-white/10 p-5">
-      <h2 className="mb-4 text-lg font-medium">Log in</h2>
+      <h2 className="mb-4 text-lg font-medium">Welcome</h2>
       {registered && (
         <p className="mb-3 rounded bg-green-700/50 p-2 text-sm text-green-100">
           Account created successfully — please sign in.
