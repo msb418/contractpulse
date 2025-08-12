@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentUserId } from "@/lib/auth";
-import ContractsClient from "./pageClient"; // your client component that renders the list
+import ContractsClient from "./pageClient";
 
 export default async function ContractsPage() {
   const uid = await getCurrentUserId();
