@@ -84,7 +84,7 @@ export default function ContractsClient() {
     <div>
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         {/* Left group: search + status side-by-side */}
-        <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
           <input
             className="w-full sm:flex-1 rounded-md bg-[#0f2336] text-gray-100 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-600"
             type="text"
@@ -110,7 +110,6 @@ export default function ContractsClient() {
             <option>Cancelled</option>
           </select>
         </div>
-
         {/* Right: primary action */}
         <Link
           href="/contracts/new"
