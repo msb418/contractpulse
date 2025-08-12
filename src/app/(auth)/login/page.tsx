@@ -122,7 +122,7 @@ function LoginInner() {
           disabled={loading || !captchaToken}
           className="w-full rounded bg-blue-600/80 px-3 py-2"
         >
-          {loading ? "Signing in…" : "Sign in"}
+          {loading ? "Signing in…" : "Log in"}
         </button>
       </form>
 
