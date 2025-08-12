@@ -4,34 +4,43 @@ export const runtime = "nodejs";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { hashPassword } from "@/lib/jwt";        // ⬅️ correct source
-import { createSessionToken, setAuthCookie } from "@/lib/auth";
 import hcaptcha from "hcaptcha";
 
 export async function POST(req: Request) {
-  const { email, password, captchaToken } = await req.json();
+  try {
+    const { email, password, captchaToken } = await req.json();
 
-  const captchaRes: any = await hcaptcha.verify(process.env.HCAPTCHA_SECRET || "", captchaToken);
-  if (!captchaRes.success) return NextResponse.json({ error: "Captcha failed" }, { status: 400 });
+    // Basic input validation
+    if (!email || !password) {
+      return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
+    }
 
-  const users = await db("users");
-  const existing = await users.findOne({ email: String(email).toLowerCase().trim() });
-  if (existing) return NextResponse.json({ error: "Already exists" }, { status: 409 });
+    // Verify hCaptcha
+    const captchaRes: any = await hcaptcha.verify(process.env.HCAPTCHA_SECRET || "", captchaToken);
+    if (!captchaRes?.success) {
+      return NextResponse.json({ error: "Captcha failed" }, { status: 400 });
+    }
 
-  const hash = await hashPassword(password);
-  const now = new Date();
-  const { insertedId } = await users.insertOne({
-    email: String(email).toLowerCase().trim(),
-    hash,
-    createdAt: now,
-  });
+    const users = await db("users");
+    const lower = String(email).toLowerCase().trim();
 
-  const token = await createSessionToken(String(insertedId));
-  const res = NextResponse.redirect(new URL("/contracts", process.env.NEXT_PUBLIC_APP_URL || req.headers.get("origin") || "http://localhost:3000"));
-  setAuthCookie(res, token);                     // ⬅️ pass BOTH args
+    const existing = await users.findOne({ email: lower });
+    if (existing) {
+      return NextResponse.json({ error: "Already exists" }, { status: 409 });
+    }
 
-  if (req.headers.get("accept")?.includes("application/json")) {
-    return NextResponse.json({ success: true, redirect: "/contracts" }, { status: 201 });
+    const hash = await hashPassword(password);
+    const now = new Date();
+    const { insertedId } = await users.insertOne({
+      email: lower,
+      hash,
+      createdAt: now,
+    });
+
+    // ✅ Return JSON success only; front-end will redirect to /login
+    return NextResponse.json({ success: true, id: String(insertedId) }, { status: 201 });
+  } catch (err) {
+    console.error("/api/auth/register error", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
-
-  return res;
 }

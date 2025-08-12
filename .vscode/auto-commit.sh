@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# Throttle window in seconds (3 minutes)
+# Throttle window in seconds (10 seconds)
 MIN_INTERVAL=10
 STATE_FILE=".vscode/.last-auto-commit"
 
