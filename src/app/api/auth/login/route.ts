@@ -1,11 +1,18 @@
+export const runtime = "nodejs";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { comparePassword } from "@/lib/jwt";
 import { createSessionToken, setAuthCookie, clearAuthCookie } from "@/lib/auth";
-import { verify } from "hcaptcha";
+import hcaptcha from "hcaptcha";
 
 export async function POST(req: Request) {
   const { email, password, captchaToken } = await req.json();
+  if (!email || !password) {
+    return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
+  }
+  if (!captchaToken) {
+    return NextResponse.json({ error: "Captcha required" }, { status: 400 });
+  }
 
   // Verify HCaptcha
   const captchaSecret = process.env.HCAPTCHA_SECRET;
@@ -13,8 +20,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Captcha secret not configured" }, { status: 500 });
   }
   try {
-    const captchaRes = await verify(captchaSecret, captchaToken);
-    if (!captchaRes.success) {
+    const captchaRes: any = await hcaptcha.verify(captchaSecret, captchaToken);
+    if (!captchaRes?.success) {
       return NextResponse.json({ error: "Captcha verification failed" }, { status: 400 });
     }
   } catch {
@@ -46,4 +53,4 @@ export async function POST(req: Request) {
   const res = NextResponse.json({ message: "Login successful", redirectTo: "/contracts" });
   setAuthCookie(res, token);
   return res;
-}
+} 
