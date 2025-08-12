@@ -15,6 +15,16 @@ function LoginInner() {
   const captchaRef = useRef<HCaptcha>(null);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
+  async function safeJson(res: Response) {
+    const ct = res.headers.get("content-type") || "";
+    if (!ct.includes("application/json")) return {} as any;
+    try {
+      return await res.json();
+    } catch {
+      return {} as any;
+    }
+  }
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!captchaToken) {
@@ -28,16 +38,18 @@ function LoginInner() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ email: email.trim(), password, captchaToken }),
+        cache: "no-store",
       });
+
       if (res.ok) {
-        const data = await res.json().catch(() => ({}));
-        if (data.token) {
-          document.cookie = `token=${data.token}; Secure; SameSite=Strict; path=/`;
+        const data = await safeJson(res);
+        if ((data as any).token) {
+          document.cookie = `token=${(data as any).token}; Secure; SameSite=Strict; path=/`;
         }
-        router.push("/contracts");
+        router.replace("/contracts");
       } else {
-        const data = await res.json().catch(() => ({}));
-        setErr(data.error || "Invalid email or password.");
+        const data = await safeJson(res);
+        setErr((data as any).error || "Invalid email or password.");
         captchaRef.current?.resetCaptcha();
         setCaptchaToken(null);
       }
