@@ -12,6 +12,16 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
+  async function safeJson(res: Response) {
+    const ct = res.headers.get("content-type") || "";
+    if (!ct.includes("application/json")) return {} as any;
+    try {
+      return await res.json();
+    } catch {
+      return {} as any;
+    }
+  }
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setErr(null);
@@ -33,6 +43,7 @@ export default function RegisterPage() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ email: trimmed, password, captchaToken }),
+        cache: "no-store",
       });
       if (res.ok) {
         // Redirect to login with success flag; some 2xx responses may have no JSON body
@@ -40,8 +51,9 @@ export default function RegisterPage() {
         return;
       } else {
         // Try to surface server error message if present
-        const data = await res.json().catch(() => ({}));
-        setErr((data as any)?.error || "Registration failed.");
+        const data = await safeJson(res);
+        const text = !Object.keys(data as any).length ? await res.text().catch(() => "") : "";
+        setErr(((data as any)?.error as string) || text || "Registration failed.");
       }
     } catch {
       setErr("Network error. Please try again.");
@@ -91,8 +103,8 @@ export default function RegisterPage() {
         />
 
         <button
-          disabled={loading}
-          className="w-full rounded bg-blue-600/80 px-3 py-2"
+          disabled={loading || !captchaToken}
+          className="w-full rounded bg-blue-600/80 px-3 py-2 disabled:opacity-60"
         >
           {loading ? "Creating…" : "Create account"}
         </button>
