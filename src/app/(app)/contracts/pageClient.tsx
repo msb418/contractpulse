@@ -83,8 +83,18 @@ export default function ContractsClient() {
   return (
     <div>
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        {/* Left group: status then search */}
+        {/* Left group: search then status */}
         <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
+          <input
+            className="w-full sm:w-[260px] sm:flex-none rounded-md bg-[#0f2336] text-gray-100 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-600"
+            type="text"
+            placeholder="Search contracts..."
+            value={q}
+            onChange={(e) => {
+              setPage(1);
+              setQ(e.target.value);
+            }}
+          />
           <select
             className="w-full sm:w-56 rounded-md bg-[#0f2336] text-gray-100 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-600"
             value={status}
@@ -99,23 +109,12 @@ export default function ContractsClient() {
             <option>Expired</option>
             <option>Cancelled</option>
           </select>
-
-          <input
-            className="w-full sm:w-[260px] sm:flex-none rounded-md bg-[#0f2336] text-gray-100 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-600"
-            type="text"
-            placeholder="Search contracts..."
-            value={q}
-            onChange={(e) => {
-              setPage(1);
-              setQ(e.target.value);
-            }}
-          />
         </div>
 
         {/* Right: primary action */}
         <Link
           href="/contracts/new"
-          className={`${btn.base} ${btn.edit} self-start sm:self-auto`}
+          className={`${btn.base} ${btn.edit} whitespace-nowrap self-start sm:self-auto`}
         >
           New Contract
         </Link>
