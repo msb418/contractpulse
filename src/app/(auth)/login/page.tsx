@@ -14,6 +14,7 @@ function LoginInner() {
   const [loading, setLoading] = useState(false);
   const captchaRef = useRef<HCaptcha>(null);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   async function safeJson(res: Response) {
     const ct = res.headers.get("content-type") || "";
@@ -24,6 +25,14 @@ function LoginInner() {
       return {} as any;
     }
   }
+
+  // Responsive captcha: update isMobile state on load and resize
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 420);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -97,13 +106,15 @@ function LoginInner() {
           />
         </div>
 
-        <div className="mt-3">
+        <div className="mt-3 w-full overflow-hidden">
           <HCaptcha
             ref={captchaRef}
             sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY!}
             onVerify={(token) => setCaptchaToken(token)}
             onExpire={() => setCaptchaToken(null)}
             onError={() => setCaptchaToken(null)}
+            size={isMobile ? "compact" : "normal"}
+            theme="dark"
           />
         </div>
 
