@@ -86,7 +86,7 @@ export default function ContractsClient() {
         {/* Left group: search + status side-by-side */}
         <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
           <input
-            className="w-full sm:flex-1 rounded-md bg-[#0f2336] text-gray-100 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-600"
+            className="w-full sm:w-[520px] sm:flex-none rounded-md bg-[#0f2336] text-gray-100 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-600"
             type="text"
             placeholder="Search contracts..."
             value={q}
