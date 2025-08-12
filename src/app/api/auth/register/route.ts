@@ -11,12 +11,17 @@ export async function POST(req: Request) {
     const { email, password, captchaToken } = await req.json();
 
     // Basic input validation
-    if (!email || !password) {
-      return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
+    if (!email || !password || !captchaToken) {
+      return NextResponse.json({ error: "Email, password, and captchaToken are required" }, { status: 400 });
     }
 
     // Verify hCaptcha
-    const captchaRes: any = await hcaptcha.verify(process.env.HCAPTCHA_SECRET || "", captchaToken);
+    let captchaRes: any;
+    try {
+      captchaRes = await hcaptcha.verify(process.env.HCAPTCHA_SECRET || "", captchaToken);
+    } catch (error) {
+      return NextResponse.json({ error: "Captcha verification failed" }, { status: 400 });
+    }
     if (!captchaRes?.success) {
       return NextResponse.json({ error: "Captcha failed" }, { status: 400 });
     }
@@ -31,14 +36,14 @@ export async function POST(req: Request) {
 
     const hash = await hashPassword(password);
     const now = new Date();
-    const { insertedId } = await users.insertOne({
+    await users.insertOne({
       email: lower,
       hash,
       createdAt: now,
     });
 
-    // ✅ Return JSON success only; front-end will redirect to /login
-    return NextResponse.json({ success: true, id: String(insertedId) }, { status: 201 });
+    // ✅ Return JSON success message for confirmation before redirecting
+    return NextResponse.json({ success: true, message: "Account created" }, { status: 201 });
   } catch (err) {
     console.error("/api/auth/register error", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
