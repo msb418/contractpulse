@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 export default function RegisterPage() {
@@ -11,6 +11,16 @@ export default function RegisterPage() {
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 420);
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   async function safeJson(res: Response) {
     const ct = res.headers.get("content-type") || "";
@@ -97,6 +107,7 @@ export default function RegisterPage() {
 
         <HCaptcha
           sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""}
+          size={isMobile ? "compact" : "normal"}
           onVerify={(token: string) => setCaptchaToken(token)}
           onExpire={() => setCaptchaToken(null)}
           onError={() => setCaptchaToken(null)}
