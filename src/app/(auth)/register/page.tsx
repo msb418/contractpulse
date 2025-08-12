@@ -111,6 +111,7 @@ export default function RegisterPage() {
           onVerify={(token: string) => setCaptchaToken(token)}
           onExpire={() => setCaptchaToken(null)}
           onError={() => setCaptchaToken(null)}
+          theme="dark"
         />
 
         <button
