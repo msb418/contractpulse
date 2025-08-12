@@ -83,33 +83,38 @@ export default function ContractsClient() {
   return (
     <div>
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <input
-          className="w-full sm:w-72 rounded-md bg-[#0f2336] text-gray-100 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-600"
-          type="text"
-          placeholder="Search contracts..."
-          value={q}
-          onChange={(e) => {
-            setPage(1);
-            setQ(e.target.value);
-          }}
-        />
-        <select
-          className="rounded-md bg-[#0f2336] text-gray-100 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-600"
-          value={status}
-          onChange={(e) => {
-            setPage(1);
-            setStatus(e.target.value);
-          }}
-        >
-          <option>All statuses</option>
-          <option>Draft</option>
-          <option>Active</option>
-          <option>Expired</option>
-          <option>Cancelled</option>
-        </select>
+        {/* Left group: search + status side-by-side */}
+        <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
+          <input
+            className="w-full sm:flex-1 rounded-md bg-[#0f2336] text-gray-100 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-600"
+            type="text"
+            placeholder="Search contracts..."
+            value={q}
+            onChange={(e) => {
+              setPage(1);
+              setQ(e.target.value);
+            }}
+          />
+          <select
+            className="w-full sm:w-56 rounded-md bg-[#0f2336] text-gray-100 border border-white/10 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-600"
+            value={status}
+            onChange={(e) => {
+              setPage(1);
+              setStatus(e.target.value);
+            }}
+          >
+            <option>All statuses</option>
+            <option>Draft</option>
+            <option>Active</option>
+            <option>Expired</option>
+            <option>Cancelled</option>
+          </select>
+        </div>
+
+        {/* Right: primary action */}
         <Link
           href="/contracts/new"
-          className={`${btn.base} ${btn.edit}`}
+          className={`${btn.base} ${btn.edit} self-start sm:self-auto`}
         >
           New Contract
         </Link>
