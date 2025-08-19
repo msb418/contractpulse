@@ -1,4 +1,4 @@
-SaaS contract tracking application — live demo & feature showcase (no source code)
+SaaS contract tracking application
 
 Live demo here: https://contractpulse.vercel.app
 
